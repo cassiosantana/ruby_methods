@@ -9,5 +9,13 @@ RSpec.describe Hash do
         expect(user_profile[:email]).to eq("charlie@example.com")
       end
     end
+
+    describe "#[] =" do
+      it "update the user's age to 26 in the user_profile hash." do
+        expect do
+          user_profile[:age] = 26
+        end.to change { user_profile[:age] }.from(35).to(26)
+      end
+    end
   end
 end
