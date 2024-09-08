@@ -4,6 +4,32 @@ RSpec.describe Hash do # rubocop:disable Metrics/BlockLength
   describe "Basic Methods" do # rubocop:disable Metrics/BlockLength
     let(:user_profile) { { name: "Charlie", age: 35, email: "charlie@example.com", phone: "123-456-7890" } }
     let(:h) { { foo: 0, bar: 1, baz: 2 } }
+    let(:customer_record) do
+      {
+        user: {
+          profile: {
+            name: "Alice",
+            address: {
+              city: "Wonderland",
+              zip: "12345"
+            }
+          },
+          orders: [
+            { id: 1, item: "Cheshire Cat Plush", quantity: 2 },
+            { id: 2, item: "Mad Hatter Hat", quantity: 1 }
+          ]
+        }
+      }
+    end
+
+    let(:permissions) do
+      {
+        role: {
+          admin: { read: true, write: false },
+          guest: { read: true }
+        }
+      }
+    end
 
     describe "#[]" do
       it "retrieve the value associated with the key: name." do
@@ -153,6 +179,33 @@ RSpec.describe Hash do # rubocop:disable Metrics/BlockLength
       context "when a value is not present" do
         it "returns false" do
           expect(user_profile.value?(1)).to be(false)
+        end
+      end
+    end
+
+    describe "#dig" do
+      context "when specified by key and identifiers" do
+        it "find and returns the object in nested object" do
+          expect(customer_record.dig(:user, :profile, :name)).to eq("Alice")
+          expect(customer_record.dig(:user, :profile, :address, :city)).to eq("Wonderland")
+          expect(customer_record.dig(:user, :orders, 0, :id)).to eq(1)
+          expect(customer_record.dig(:user, :orders, 1, :item)).to eq("Mad Hatter Hat")
+        end
+      end
+
+      context "when the keys is not present and a default value was not provided" do
+        it "returns nil" do
+          expect(customer_record.dig(:user, :profile, :age)).to be(nil)
+        end
+      end
+
+      context "when the keys is not present and a default value was provided" do
+        it "return default value" do
+          permissions[:role].default_proc = proc {
+            { read: false, write: false }
+          }
+
+          expect(permissions.dig(:role, :unknown_role)).to eq({ read: false, write: false })
         end
       end
     end
