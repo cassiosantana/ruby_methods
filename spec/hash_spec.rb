@@ -17,5 +17,14 @@ RSpec.describe Hash do
         end.to change { user_profile[:age] }.from(35).to(26)
       end
     end
+
+    describe "#delete" do
+      it "remove the phone number from the user_profile hash return the phone value." do
+        expect(
+          user_profile.delete(:phone)
+        ).to be("123-456-7890")
+        expect(user_profile.key?(:phone)).to be(false)
+      end
+    end
   end
 end
