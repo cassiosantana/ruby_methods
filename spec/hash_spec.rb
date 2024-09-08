@@ -128,5 +128,19 @@ RSpec.describe Hash do # rubocop:disable Metrics/BlockLength
         expect(h.values).to eq([0, 1, 2])
       end
     end
+
+    describe "#key?" do
+      context "when a key is present" do
+        it "returns true" do
+          expect(h.key?(:foo)).to be(true)
+        end
+      end
+
+      context "when a key is not present" do
+        it "returns false" do
+          expect(h.key?(:blue)).to be(false)
+        end
+      end
+    end
   end
 end
