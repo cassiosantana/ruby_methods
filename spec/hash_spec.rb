@@ -142,5 +142,19 @@ RSpec.describe Hash do # rubocop:disable Metrics/BlockLength
         end
       end
     end
+
+    describe "#value?" do
+      context "when a value is present" do
+        it "returns true" do
+          expect(user_profile.value?("charlie@example.com")).to be(true)
+        end
+      end
+
+      context "when a value is not present" do
+        it "returns false" do
+          expect(user_profile.value?(1)).to be(false)
+        end
+      end
+    end
   end
 end
