@@ -116,5 +116,11 @@ RSpec.describe Hash do # rubocop:disable Metrics/BlockLength
         end
       end
     end
+
+    describe "#keys" do
+      it "returns a new Array containing all keys in self" do
+        expect(h.keys).to eq(%i[foo bar baz])
+      end
+    end
   end
 end
