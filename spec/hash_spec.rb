@@ -26,5 +26,37 @@ RSpec.describe Hash do
         expect(user_profile.key?(:phone)).to be(false)
       end
     end
+
+    describe "#fetch" do # rubocop:disable Metrics/BlockLength
+      context "if key is found" do
+        it "returns the value for the given key" do
+          expect(
+            user_profile.fetch(:age)
+          ).to be(35)
+        end
+      end
+
+      context "if key is not found and no block was given" do
+        it "return default value." do
+          expect(
+            user_profile.fetch(:location, :default)
+          ).to eq(:default)
+        end
+
+        it "return unknown value." do
+          expect(
+            user_profile.fetch(:location, "Unknown")
+          ).to eq("Unknown")
+        end
+      end
+
+      context "If key is not found and a block was given," do
+        it "yields key to the block and returns the block’s return value." do
+          expect(
+            user_profile.fetch(:location) { |key| "No key #{key}" }
+          ).to eq("No key location")
+        end
+      end
+    end
   end
 end
