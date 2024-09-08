@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe Hash do
-  describe "Basic Methods" do
+RSpec.describe Hash do # rubocop:disable Metrics/BlockLength
+  describe "Basic Methods" do # rubocop:disable Metrics/BlockLength
     let(:user_profile) { { name: "Charlie", age: 35, email: "charlie@example.com", phone: "123-456-7890" } }
+    let(:h) { { foo: 0, bar: 1, baz: 2 } }
 
     describe "#[]" do
       it "retrieve the value associated with the key: name." do
@@ -55,6 +56,63 @@ RSpec.describe Hash do
           expect(
             user_profile.fetch(:location) { |key| "No key #{key}" }
           ).to eq("No key location")
+        end
+      end
+    end
+
+    describe "#each" do # rubocop:disable Metrics/BlockLength
+      describe "#each_pair" do
+        context "when called with a block" do
+          it "returns self" do
+            expect(h.each_pair {}).to be(h)
+          end
+
+          it "yields each key-value pair to the block" do
+            keys = []
+            values = []
+
+            h.each_pair do |key, value|
+              keys << key
+              values << value
+            end
+
+            expect(keys).to eq(%i[foo bar baz])
+            expect(values).to eq([0, 1, 2])
+          end
+        end
+
+        context "when no block was given" do
+          it "returns a new Enumerator" do
+            expect(h.each_pair).to be_a(Enumerator)
+          end
+        end
+      end
+
+      describe "#each_key" do
+        context "when called with a block" do
+          it "returns self" do
+            expect(h.each_key {}).to eq(h)
+          end
+        end
+
+        context "when no block was given" do
+          it "returns a new Enumerator" do
+            expect(h.each_key).to be_a(Enumerator)
+          end
+        end
+      end
+
+      describe "#each_value" do
+        context "when called with a block" do
+          it "returns self" do
+            expect(h.each_value {}).to eq(h)
+          end
+        end
+
+        context "when no block was given" do
+          it "returns a new Enumerator" do
+            expect(h.each_value).to be_a(Enumerator)
+          end
         end
       end
     end
